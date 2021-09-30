@@ -1,0 +1,31 @@
+version: "3"
+services:
+  pg_master:
+    image: pg-master
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=mydatabase
+      - PG_REP_USER=rep_user
+      - PG_REP_PASSWORD=123456
+    networks:
+      default:
+        aliases:
+          - pg_cluster
+  pg_slave:
+    image: pg-slave
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=mydatabase
+      - PG_REP_USER=rep_user
+      - PG_REP_PASSWORD=123456
+      - PG_MASTER_HOST=pg_master
+    networks:
+      default:
+        aliases:
+          - pg_cluster
+volumes:
+  pg_data:
